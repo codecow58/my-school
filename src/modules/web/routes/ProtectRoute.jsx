@@ -5,9 +5,9 @@ import { useUserContext } from "../../../context/user/UserContext"
 export default ({children}) => {
 
     const user = useUserContext();
-
+    debugger;
     if(user.data){
-        return({ children})
+        return children
     }
 
     if(user.isLoading){
