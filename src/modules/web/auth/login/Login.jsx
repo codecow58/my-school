@@ -1,134 +1,90 @@
 import { Form, Field } from "react-final-form";
-import {useAuthSignInWithEmailAndPassword } from '@react-query-firebase/auth'
-import backgroundImage from '../../../../assets/images/bg-image.svg'
-import { auth } from "../../../../firebase";
+import backgroundImage from "../../../../assets/images/bg-image.svg";
+import { useState } from "react";
+import { useAuthSignInWithEmailAndPassword } from "@react-query-firebase/auth";
+import {auth} from '../../../../firebase'
+import { useNavigate } from "react-location";
+// 3730a3
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default () => {
+    const [err, setError] = useState(false);
+
+    const navigate = useNavigate();
   const mutation = useAuthSignInWithEmailAndPassword(auth, {
     onError(error) {
-    console.log("Could not sign you in!");
+      debugger;
+      setError(error)
     },
+    onSuccess(data){
+      console.log(data);
+      navigate({ to: "./about", replace: true });
+    }
   });
 
-
-  const onSubmit = ({email,password}) =>{
-    debugger;
+  const onSubmit = ({email,password}) => {
     mutation.mutate({ email, password });
   };
 
-
-
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <div className="w-1/2 flex flex-col sm:flex-row h-2/3  sm:w-3/4">
-        <div
-          className="hidden lg:h-full lg:flex lg:w-1/2 bg-no-repeat object-cover"
-          style={{ backgroundImage: `url(${backgroundImage})` }}
-        ></div>
-        <div className=" flex flex-col justify-center items-center ">
-          <h3 className="text-xl font-semibold text-purple-500 text-center">
-            Login
-          </h3>
+    <div className="flex h-screen w-screen bg-indigo-100  justify-center items-center">
+      <div className=" flex flex-col w-full h-full sm:flex-row md:w-3/4 md:h-3/4 bg-white">
+        <div className="flex  flex-row flex-none w-full h-full sm:w-1/2">
+          <div
+            className="w-full h-full bg-no-repeat bg-center bg-indigo-800"
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+          ></div>
+        </div>
+        <div className="flex flex-col flex-auto  w-full h-ful items-center justify-center p-10 space-y-3">
+          <h3 className="text-xl font-bold font-mono text-indigo-800">Login</h3>
           <Form
             onSubmit={onSubmit}
-            className="bg-gray-200"
             render={({ handleSubmit }) => (
-              <form onSubmit={handleSubmit} className="space-y-2 w-64">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 <Field name="email">
                   {({ input, meta }) => (
-                    <div>
-                      <label className="block mb-2" htmlFor="email">
-                        Email
-                      </label>
+                    <div className="flex flex-col">
+                      <label htmlFor="email">Email: *</label>
                       <input
-                        type="text"
-                        className=" w-full"
+                        type="email"
                         {...input}
-                        placeholder="Email"
+                        placeholder="test@test.com"
+                        className="rounded-full"
                         id="email"
+                        required
                       />
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6 relative -top-8 float-right  text-purple-600 "
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                        />
-                      </svg>
-                      ;{meta.touched && meta.error && <span>{meta.error}</span>}
-                    </div>
-                  )}
-                </Field>
-
-                <Field name="password">
-                  {({ input, meta }) => (
-                    <div>
-                      <label className="block mb-2" htmlFor="password">
-                        Password
-                      </label>
-                      <input
-                        type="password"
-                        {...input}
-                        className="w-full"
-                        placeholder="Password"
-                        id="password"
-                      />
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6 relative -top-8 float-right text-purple-600"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                        />
-                      </svg>
-
                       {meta.touched && meta.error && <span>{meta.error}</span>}
                     </div>
                   )}
                 </Field>
-                <Field name="remember_me">
+                <Field name="password">
                   {({ input, meta }) => (
-                    <div className="space-x-1 space-y-2">
+                    <div className="flex flex-col">
+                      <label htmlFor="password">password: *</label>
                       <input
-                        type="checkbox"
+                        type="password"
                         {...input}
-                        className=""
-                        id="remember_me"
+                        placeholder="password"
+                        className="rounded-full"
+                        id="password"
+                        required
                       />
-                      <label className="" htmlFor="remember_me">
-                        Remember me
-                      </label>
-
                       {meta.touched && meta.error && <span>{meta.error}</span>}
                     </div>
                   )}
                 </Field>
 
                 <button
-                  className="w-full
-                    text-purple-600 p-3 mt-10 border-2 border-purple-600 hover:text-gray-50 hover:bg-purple-600"
                   type="submit"
+                  className="w-full 
+                border-2 rounded-full border-indigo-800 hover:bg-indigo-800 hover:text-gray-50 p-2"
                 >
-                  Login
+                  Submit
                 </button>
+                <br />
+                <a href={"https://storyset.com/nature"}>
+                  Nature illustrations by Storyset
+                </a>
               </form>
             )}
           />
@@ -137,6 +93,3 @@ export default () => {
     </div>
   );
 };
-
-
-
